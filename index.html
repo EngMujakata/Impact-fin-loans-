@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#003f9e">
+<title>Impact-Fin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+:root{--p:#0056d2;--p2:#003f9e;--pl:#e8f0fe;--bg:#f1f5f9;--s:#fff;--t:#1e293b;--m:#64748b;--b:#e2e8f0;--ok:#15803d;--okl:#dcfce7;--warn:#b45309;--warnl:#fef3c7;--bad:#be123c;--badl:#ffe4e6;--sh:0 1px 2px rgba(15,31,61,.06),0 4px 14px rgba(15,31,61,.06)}
+body{font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+[hidden]{display:none!important}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.muted{color:var(--m)}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:15px;font-weight:650}
+.card{background:var(--s);border:1px solid var(--b);border-radius:14px;box-shadow:var(--sh);padding:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;padding:0 16px;border-radius:10px;font-weight:600;border:1px solid var(--b);background:var(--s);transition:.15s}
+.btn:hover{background:var(--pl)}
+.btn.primary{background:var(--p);border-color:var(--p);color:#fff}
+.btn.primary:hover{filter:brightness(1.1);background:var(--p)}
+.btn.danger{color:var(--bad);border-color:var(--badl);background:var(--badl)}
+.btn.sm{height:32px;padding:0 12px;font-size:13px;border-radius:8px}
+.btn[disabled]{opacity:.55;pointer-events:none}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field label{font-size:12px;font-weight:600;color:var(--m)}
+.field input,.field select,.field textarea{height:42px;padding:0 12px;border:1px solid var(--b);border-radius:10px;background:var(--s);outline:0;width:100%}
+.field textarea{height:70px;padding:10px 12px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus,.search input:focus{border-color:var(--p);box-shadow:0 0 0 3px var(--pl)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.badge{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:99px;font-size:11.5px;font-weight:650;white-space:nowrap;background:var(--pl);color:var(--p)}
+.badge.ok{background:var(--okl);color:var(--ok)}.badge.warn{background:var(--warnl);color:var(--warn)}.badge.bad{background:var(--badl);color:var(--bad)}.badge.gray{background:var(--b);color:var(--m)}
+.empty{padding:34px 16px;text-align:center;color:var(--m)}
+.grow{flex:1;min-width:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r{text-align:right}
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,var(--p2),var(--p))}
+.lbox{width:100%;max-width:390px;background:var(--s);border-radius:20px;padding:30px 26px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.lbrand{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:22px;gap:8px}
+.logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;display:flex;align-items:center;justify-content:center}
+.logo .ic{width:30px;height:30px}
+.lerr{background:var(--badl);color:var(--bad);padding:9px 12px;border-radius:10px;font-size:13px;margin-bottom:12px}
+header.top{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;height:58px;display:flex;align-items:center;gap:11px;padding:0 16px}
+header.top .logo{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.18)}
+header.top .logo .ic{width:20px;height:20px}
+header.top b{font-size:16px;letter-spacing:-.01em}
+header.top small{display:block;font-size:11px;opacity:.8;line-height:1.1}
+.me{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center}
+.menu{position:absolute;right:12px;top:54px;background:var(--s);color:var(--t);border:1px solid var(--b);border-radius:12px;box-shadow:var(--sh);min-width:210px;padding:8px;z-index:40}
+.menu .who{padding:8px 10px 10px;border-bottom:1px solid var(--b);margin-bottom:6px}
+.menu button{width:100%;display:flex;gap:9px;align-items:center;padding:9px 10px;border-radius:8px;text-align:left}
+.menu button:hover{background:var(--pl)}
+main{max-width:1100px;margin:0 auto;padding:18px 14px 96px}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+nav.foot{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--s);border-top:1px solid var(--b);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 16px rgba(15,31,61,.06)}
+nav.foot button{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;color:var(--m);font-size:11px;font-weight:600}
+nav.foot button .ic{width:23px;height:23px}
+nav.foot button.on{color:var(--p)}
+nav.foot button.on::before{content:"";position:absolute;top:0;left:22%;right:22%;height:3px;border-radius:0 0 4px 4px;background:var(--p)}
+.grid{display:grid;gap:12px}
+.k4{grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.kpi{display:flex;gap:13px;align-items:center}
+.kic{width:44px;height:44px;border-radius:12px;background:var(--pl);color:var(--p);display:flex;align-items:center;justify-content:center;flex:none}
+.kl{font-size:12px;color:var(--m);font-weight:600}
+.kv{font-size:21px;font-weight:750;letter-spacing:-.02em}
+.mini{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--b)}
+.mini:first-of-type{border-top:0}
+.mini small,.row small{display:block;color:var(--m);font-size:12px}
+.amt{font-weight:700;text-align:right;white-space:nowrap}
+.search{position:relative;flex:1;min-width:0}
+.search .ic{position:absolute;left:12px;top:11px;color:var(--m);width:18px;height:18px}
+.search input{width:100%;height:40px;padding:0 12px 0 38px;border:1px solid var(--b);border-radius:10px;background:var(--s);outline:0}
+.toolbar{display:flex;gap:10px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+.scroll10{max-height:560px;overflow:auto;background:var(--s);border:1px solid var(--b);border-radius:14px;box-shadow:var(--sh)}
+.row{display:flex;align-items:center;gap:11px;min-height:58px;padding:8px 14px;border-bottom:1px solid var(--b);cursor:pointer}
+.row:hover{background:var(--pl)}
+.row.static{cursor:default}.row.static:hover{background:none}
+.row b{display:block;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{width:36px;height:36px;border-radius:50%;background:var(--pl);color:var(--p);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.more{display:none;height:36px;line-height:36px;text-align:center;font-size:12px;color:var(--m)}
+.seg{display:inline-flex;background:var(--pl);border-radius:10px;padding:3px;gap:2px}
+.seg button{padding:7px 14px;border-radius:8px;font-weight:600;color:var(--m)}
+.seg button.on{background:var(--s);color:var(--p);box-shadow:var(--sh)}
+.sec{margin:20px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.calc{background:var(--pl);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.calc div{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}
+.calc div:last-child{font-weight:700;border-top:1px solid var(--b);margin-top:4px;padding-top:7px}
+.pick{border:1px solid var(--b);border-radius:10px;margin-top:4px;max-height:190px;overflow:auto;background:var(--s)}
+.pick button{display:block;width:100%;text-align:left;padding:9px 12px;border-bottom:1px solid var(--b)}
+.pick button:hover{background:var(--pl)}
+.ov{position:fixed;inset:0;z-index:60;background:rgba(10,20,40,.5);display:flex;align-items:flex-end;justify-content:center;animation:fd .15s}
+.sheet{width:100%;max-width:560px;max-height:92vh;background:var(--s);border-radius:18px 18px 0 0;display:flex;flex-direction:column;animation:up .2s}
+.sheet.wide{max-width:720px}
+.sheet .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--b)}
+.sheet .bd{padding:16px 18px;overflow:auto}
+.sheet .ft{display:flex;gap:10px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--b);flex-wrap:wrap}
+@media(min-width:700px){.ov{align-items:center}.sheet{border-radius:18px}}
+@keyframes fd{from{opacity:0}}@keyframes up{from{transform:translateY(24px);opacity:0}}
+#bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:130;pointer-events:none}
+#bar i{display:block;height:100%;width:0;background:#fff;box-shadow:0 0 6px var(--p);transition:width .3s ease,opacity .3s;opacity:0}
+#bar.on i{opacity:1}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;width:92%;max-width:420px;pointer-events:none}
+#toast div{background:var(--t);color:var(--s);padding:11px 16px;border-radius:12px;font-weight:600;box-shadow:var(--sh);animation:up .2s}
+#toast div.err{background:var(--bad);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px;text-align:left;border-bottom:1px solid var(--b)}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--m)}
+.tw{overflow-x:auto}
+.sumline{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.sumline div{background:var(--pl);border-radius:10px;padding:9px 13px;flex:1;min-width:110px}
+.rc .rh{text-align:center;padding-bottom:12px;border-bottom:2px solid var(--t);margin-bottom:8px}
+.rc .rr{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--b)}
+.rc .rr.tot{font-size:16px;font-weight:750;border-bottom:2px solid var(--t)}
+@media(max-width:560px){.two{grid-template-columns:1fr}.pagehead .btn span.t{display:none}}
+@media print{body>*:not(#mods){display:none!important}.ov{position:static;background:none}.sheet{max-height:none;box-shadow:none;max-width:none}.sheet .ft,.sheet .hd button{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.8a3.5 3.5 0 010 6.4M18 14.3c2.2.7 3.5 2.6 3.5 5.7"/></symbol>
+<symbol id="i-loan" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 13h18"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5a2 2 0 00-2 2v12a2 2 0 002 2h4M16 8l4 4-4 4M20 12H9"/></symbol>
+<symbol id="i-mark" viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-cash" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></symbol>
+</defs></svg>
+<div id="bar"><i></i></div>
+
+<section id="login" hidden>
+  <form class="lbox" id="lf">
+    <div class="lbrand"><div class="logo"><svg class="ic"><use href="#i-mark"/></svg></div><div><h1 data-co>Impact-Fin</h1><div class="muted" data-tag></div></div></div>
+    <div id="lerr" class="lerr" hidden></div>
+    <div class="field"><label>Username</label><input id="lu" autocomplete="username" autocapitalize="none" required></div>
+    <div class="field"><label>Password</label><input id="lp" type="password" autocomplete="current-password" required></div>
+    <button class="btn primary" style="width:100%;height:44px;margin-top:4px" type="submit">Sign in</button>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="logo"><svg class="ic"><use href="#i-mark"/></svg></div>
+    <div class="grow"><b data-co>Impact-Fin</b><small data-tag></small></div>
+    <button class="me" id="meBtn" aria-label="Account"></button>
+    <div class="menu" id="menu" hidden>
+      <div class="who"><b id="mName"></b><div class="muted" id="mRole"></div></div>
+      <button id="mPw"><svg class="ic"><use href="#i-check"/></svg>Change password</button>
+      <button id="mOut"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+    </div>
+  </header>
+  <main id="main"></main>
+  <nav class="foot" id="nav">
+    <button data-v="dash"><svg class="ic"><use href="#i-home"/></svg>Home</button>
+    <button data-v="clients"><svg class="ic"><use href="#i-users"/></svg>Clients</button>
+    <button data-v="loans"><svg class="ic"><use href="#i-loan"/></svg>Loans</button>
+    <button data-v="repay"><svg class="ic"><use href="#i-card"/></svg>Repayments</button>
+  </nav>
+</div>
+<div id="mods"></div>
+<div id="toast"></div>
+
+<script>
+/* ═══════════ Configuration ═══════════ */
+const API_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
+const TERMS = [['1:week', '1 Week'], ['2:week', '2 Weeks'], ['1:month', '1 Month'], ['3:month', '3 Months'], ['6:month', '6 Months'], ['12:month', '1 Year'], ['24:month', '2 Years']];
+
+/* ═══════════ Utilities ═══════════ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ic = n => `<svg class="ic"><use href="#i-${n}"/></svg>`;
+const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fdate = s => { if (!s) return '-'; const [y, m, d] = String(s).slice(0, 10).split('-'); return `${+d} ${MN[m - 1]} ${y}`; };
+const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+const S = { token: localStorage.getItem('if_token') || '', user: null, settings: { company_name: 'Impact-Fin', tagline: 'Microfinance Platform', currency: '$', default_rate: '5', officer_limit: '50' }, view: 'dash' };
+const money = n => `${S.settings.currency || ''}${Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const termLabel = (p, u) => `${p} ${u}${p > 1 ? 's' : ''}`;
+const STATUS = { Overdue: 'bad', Active: 'ok', Pending: 'warn', Closed: 'gray', Rejected: 'bad', Due: 'warn', Current: '', Cleared: 'ok', 'No loan': 'gray' };
+const badge = s => `<span class="badge ${STATUS[s] ?? ''}">${esc(s)}</span>`;
+const debounce = (f, ms = 350) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
+function toast(msg, kind) { const d = document.createElement('div'); d.textContent = msg; if (kind === 'err') d.className = 'err'; $('#toast').appendChild(d); setTimeout(() => d.remove(), 3600); }
+
+/* Slim progress bar */
+const Bar = { n: 0, start() { if (this.n++) return; const f = $('#bar i'); $('#bar').classList.add('on'); f.style.width = '15%'; setTimeout(() => { if (this.n) f.style.width = '75%'; }, 120); }, stop() { if (--this.n) return; const f = $('#bar i'); f.style.width = '100%'; setTimeout(() => { f.style.width = '0'; $('#bar').classList.remove('on'); }, 220); } };
+
+/* API: every write carries a request id, so a retry can never create a duplicate. */
+async function api(action, data = {}) {
+  if (!API_URL || API_URL.startsWith('PASTE')) throw new Error('The service is not available right now.');
+  Bar.start();
+  try {
+    for (let a = 0; ; a++) {
+      try {
+        const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, token: S.token, ...data }) });
+        const j = await r.json();
+        if (!j.ok) { if (j.code === 'AUTH' && S.user) signedOut(); throw new Error(j.error || 'Request failed.'); }
+        return j.data;
+      } catch (e) {
+        if ((e instanceof TypeError || e instanceof SyntaxError) && a < 2 && (data.rid || !/^(login|passwordChange)$/.test(action))) { await new Promise(r => setTimeout(r, 700 * (a + 1))); continue; }
+        if (e instanceof TypeError || e instanceof SyntaxError) throw new Error('Connection problem. Please check your internet and try again.');
+        throw e;
+      }
+    }
+  } finally { Bar.stop(); }
+}
+
+/* ═══════════ Modals ═══════════ */
+function modal({ title, body, actions = [], wide = false }) {
+  const ov = document.createElement('div'); ov.className = 'ov';
+  ov.innerHTML = `<div class="sheet ${wide ? 'wide' : ''}"><div class="hd"><h2>${esc(title)}</h2><button class="btn sm" data-x aria-label="Close">${ic('x')}</button></div><div class="bd">${body}</div>${actions.length ? '<div class="ft"></div>' : ''}</div>`;
+  const ft = $('.ft', ov);
+  actions.forEach(a => { const b = document.createElement('button'); b.className = 'btn ' + (a.cls || ''); b.innerHTML = a.label; b.onclick = () => a.run(ov, b); ft.appendChild(b); });
+  $('[data-x]', ov).onclick = () => ov.remove();
+  ov.addEventListener('mousedown', e => { if (e.target === ov) ov.remove(); });
+  $('#mods').appendChild(ov); const f = $('input,select,textarea', ov); if (f && !wide) f.focus();
+  return ov;
+}
+function confirmBox(msg, label = 'Confirm') {
+  return new Promise(res => modal({ title: 'Please confirm', body: `<p>${esc(msg)}</p>`, actions: [
+    { label: 'Cancel', run: o => { o.remove(); res(false); } }, { label, cls: 'primary', run: o => { o.remove(); res(true); } }] }));
+}
+const field = (label, name, val = '', type = 'text', extra = '') => `<div class="field"><label>${label}</label><input name="${name}" type="${type}" value="${esc(val)}" ${extra}></div>`;
+const formData = el => { const o = {}; $$('[name]', el).forEach(i => o[i.name] = i.value); return o; };
+async function submit(btn, fn) { btn.disabled = true; try { await fn(); } catch (e) { toast(e.message, 'err'); } finally { btn.disabled = false; } }
+const closeAll = () => $$('#mods .ov').forEach(o => o.remove());
+
+/* ═══════════ Auth flow ═══════════ */
+function brand() { const s = S.settings; $$('[data-co]').forEach(e => e.textContent = s.company_name); $$('[data-tag]').forEach(e => e.textContent = s.tagline || ''); document.title = s.company_name; }
+function showLogin() { $('#app').hidden = true; $('#login').hidden = false; brand(); }
+function showApp() {
+  $('#login').hidden = true; $('#app').hidden = false; brand();
+  $('#meBtn').textContent = initials(S.user.name); $('#mName').textContent = S.user.name; $('#mRole').textContent = S.user.role === 'admin' ? 'Administrator' : 'Loan Officer';
+  go(S.view || 'dash');
+}
+function signedOut() { S.token = ''; S.user = null; localStorage.removeItem('if_token'); $('#mods').innerHTML = ''; showLogin(); }
+$('#lf').addEventListener('submit', async e => {
+  e.preventDefault(); const er = $('#lerr'), btn = $('button', e.target); er.hidden = true; btn.disabled = true;
+  try {
+    const d = await api('login', { username: $('#lu').value, password: $('#lp').value });
+    S.token = d.token; localStorage.setItem('if_token', d.token); S.user = d.user;
+    S.settings = (await api('bootstrap')).settings; $('#lp').value = ''; S.view = 'dash'; showApp();
+  } catch (err) { er.textContent = err.message; er.hidden = false; } finally { btn.disabled = false; }
+});
+$('#meBtn').onclick = e => { e.stopPropagation(); $('#menu').hidden = !$('#menu').hidden; };
+document.addEventListener('click', () => $('#menu').hidden = true);
+$('#mOut').onclick = async () => { try { await api('logout'); } catch (e) {} signedOut(); };
+$('#mPw').onclick = () => modal({
+  title: 'Change password', body: `<div id="pw">${field('Current password', 'oldPassword', '', 'password', 'autocomplete="current-password"')}${field('New password', 'newPassword', '', 'password', 'autocomplete="new-password"')}</div>`,
+  actions: [{ label: 'Cancel', run: o => o.remove() }, { label: 'Save', cls: 'primary', run: (o, b) => submit(b, async () => { await api('passwordChange', formData($('#pw', o))); o.remove(); toast('Password changed'); }) }]
+});
+async function boot() {
+  brand();
+  try {
+    if (S.token) { const b = await api('bootstrap'); S.user = b.user; S.settings = b.settings; return showApp(); }
+    S.settings = { ...S.settings, ...await api('publicInfo') };
+  } catch (e) { S.token = ''; localStorage.removeItem('if_token'); }
+  showLogin();
+}
+
+/* ═══════════ Router & lazy lists ═══════════ */
+const V = {};
+async function go(v) {
+  S.view = v; $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); window.scrollTo(0, 0);
+  try { await V[v](); } catch (e) { if (S.user) toast(e.message, 'err'); }
+}
+$('#nav').addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(b.dataset.v); });
+const refresh = () => go(S.view);
+const main = () => $('#main');
+function lazy(o) {
+  const sc = o.scroller, bd = o.body, mr = o.more; let page = 0, done = false, busy = false, seq = 0;
+  async function next(reset) {
+    if (reset) { page = 0; done = false; busy = false; bd.innerHTML = ''; sc.scrollTop = 0; mr.style.display = 'none'; seq++; }
+    if (done || busy) return;
+    const my = seq; busy = true;
+    try {
+      const d = await o.load(page + 1);
+      if (my !== seq) return;
+      page++; done = !d.hasMore;
+      if (page === 1 && !d.rows.length) bd.innerHTML = `<div class="empty">${o.empty || 'Nothing here yet.'}</div>`;
+      else bd.insertAdjacentHTML('beforeend', d.rows.map(o.row).join(''));
+      mr.style.display = done ? 'none' : 'block';
+      if (o.onData) o.onData(d);
+    } catch (e) { toast(e.message, 'err'); } finally { if (my === seq) busy = false; }
+  }
+  sc.addEventListener('scroll', () => { if (sc.scrollTop > 0 && sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 30) next(false); });
+  next(true); return { reload: () => next(true) };
+}
+const searchBox = (id, ph) => `<div class="search">${ic('search')}<input id="${id}" type="search" placeholder="${ph}" autocomplete="off"></div>`;
+const listShell = () => `<div class="scroll10" id="sc"><div id="bd"></div><div class="more" id="mr">Scroll for more...</div></div><div class="muted" id="tot" style="margin-top:8px;font-size:12px"></div>`;
+const loanRow = l => `<div class="row" data-id="${esc(l.id)}"><div class="av">${esc(initials(l.clientName))}</div><div class="grow"><b>${esc(l.clientName)}</b><small>${esc(l.id)} · ${termLabel(l.periods, l.unit)} · balance ${money(l.balance)}</small></div><div class="amt">${money(l.principal)}<div>${badge(l.state)}</div></div>${ic('chev')}</div>`;
+
+/* ═══════════ Dashboard ═══════════ */
+V.dash = async function () {
+  const d = await api('dashboard');
+  main().innerHTML = `
+    <div class="pagehead"><div><h1>Dashboard</h1><div class="muted">Welcome back, ${esc(S.user.name.split(' ')[0])}</div></div><button class="btn primary" id="nl">${ic('plus')}<span class="t">New loan</span></button></div>
+    <div class="grid k4">
+      <div class="card kpi"><div class="kic">${ic('users')}</div><div><div class="kl">Clients</div><div class="kv">${d.clients}</div></div></div>
+      <div class="card kpi"><div class="kic">${ic('loan')}</div><div><div class="kl">Active loans</div><div class="kv">${d.active}</div></div></div>
+      <div class="card kpi" ${d.pending ? 'style="cursor:pointer" data-go="loans"' : ''}><div class="kic">${ic('clock')}</div><div><div class="kl">Pending approval</div><div class="kv">${d.pending}</div></div></div>
+      <div class="card kpi"><div class="kic">${ic('cash')}</div><div><div class="kl">Outstanding portfolio</div><div class="kv">${money(d.portfolio)}</div><div class="muted" style="font-size:12px">Collected this month ${money(d.month)}</div></div></div>
+    </div>
+    <div class="grid g2">
+      <div class="card"><div class="sec" style="margin-top:0"><h2>Recent loans</h2><button class="btn sm" data-go="loans">View all</button></div>
+        ${d.recent.length ? d.recent.map(l => `<div class="mini" data-loan="${esc(l.id)}" style="cursor:pointer"><div class="av">${initials(l.clientName)}</div><div class="grow"><b class="ell" style="display:block">${esc(l.clientName)}</b><small>${esc(l.id)} · ${fdate(l.startDate)}</small></div><div class="amt">${money(l.principal)}<div>${badge(l.status)}</div></div></div>`).join('') : '<div class="empty">No loans yet.</div>'}</div>
+      <div class="card"><div class="sec" style="margin-top:0"><h2>Next repayments</h2><button class="btn sm" data-go="repay">Collect</button></div>
+        ${d.due.length ? d.due.map(l => `<div class="mini"><div class="av">${initials(l.clientName)}</div><div class="grow"><b class="ell" style="display:block">${esc(l.clientName)}</b><small>${esc(l.id)} · due ${fdate(l.next.dueDate)}</small></div><div class="amt">${money(l.next.amount)}<div>${badge(l.state)}</div></div></div>`).join('') : '<div class="empty">Nothing due.</div>'}
+        ${d.overdue > 0 ? `<div class="muted" style="margin-top:8px;font-size:12px">Total overdue: <b style="color:var(--bad)">${money(d.overdue)}</b></div>` : ''}</div>
+    </div>`;
+  $('#nl').onclick = () => loanForm();
+  $$('[data-go]', main()).forEach(b => b.onclick = () => go(b.dataset.go));
+  $$('[data-loan]', main()).forEach(b => b.onclick = () => loanDetail(b.dataset.loan));
+};
+
+/* ═══════════ Clients ═══════════ */
+V.clients = async function () {
+  main().innerHTML = `<div class="pagehead"><div><h1>Clients</h1><div class="muted">Register clients and manage their loans</div></div><button class="btn primary" id="nc">${ic('plus')}<span class="t">New client</span></button></div>
+    <div class="toolbar">${searchBox('q', 'Search name, phone or ID')}</div>${listShell()}`;
+  $('#nc').onclick = () => clientForm();
+  let q = '';
+  const L = lazy({ scroller: $('#sc'), body: $('#bd'), more: $('#mr'), empty: 'No clients found.', load: p => api('clientsList', { q, page: p }),
+    row: c => `<div class="row" data-id="${esc(c.id)}"><div class="av">${esc(initials(c.name))}</div><div class="grow"><b>${esc(c.name)} <span class="muted" style="font-weight:400">${esc(c.id)}</span></b><small>${esc(c.phone)}${c.activeLoans ? ' · balance ' + money(c.balance) : ''}</small></div>${badge(c.status)}${ic('chev')}</div>`,
+    onData: d => $('#tot').textContent = `${d.total} client${d.total === 1 ? '' : 's'}` });
+  $('#bd').onclick = e => { const r = e.target.closest('.row'); if (r) clientDetail(r.dataset.id); };
+  $('#q').oninput = debounce(e => { q = e.target.value.trim(); L.reload(); });
+};
+function clientForm(c) {
+  const isNew = !c; c = c || {}; const rid = uid();
+  modal({
+    title: isNew ? 'New client' : 'Edit client',
+    body: `<div id="cf">${field('Full name *', 'name', c.name)}<div class="two">${field('Phone *', 'phone', c.phone, 'tel')}${field('Date of birth', 'dob', c.dob, 'date')}</div>${field('National ID', 'idNumber', c.idNumber)}<div class="field"><label>Address</label><textarea name="address">${esc(c.address || '')}</textarea></div></div>`,
+    actions: [{ label: 'Cancel', run: o => o.remove() }, { label: isNew ? 'Save client' : 'Save', cls: 'primary', run: (o, b) => submit(b, async () => {
+      const f = formData($('#cf', o)); if (!isNew) f.id = c.id; else f.rid = rid;
+      const r = await api('clientSave', f); o.remove(); toast(isNew ? 'Client saved' : 'Client updated'); refresh(); clientDetail(r.id);
+    }) }]
+  });
+}
+async function clientDetail(id) {
+  const d = await api('clientGet', { id }), c = d.client; closeAll();
+  modal({
+    title: c.name,
+    body: `<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">${badge(d.status)}<span class="muted">${esc(c.id)}</span></div>
+      <div class="muted" style="line-height:1.7">${[c.phone, c.idNumber && 'ID ' + c.idNumber, c.dob && 'Born ' + fdate(c.dob), c.address].filter(Boolean).map(esc).join('<br>')}</div>
+      <div class="sec" style="margin-bottom:2px"><h2>Loans</h2></div>
+      ${d.loans.length ? d.loans.map(l => `<div class="mini" data-loan="${esc(l.id)}" style="cursor:pointer"><div class="grow"><b>${esc(l.id)} · ${money(l.principal)}</b><small>${termLabel(l.periods, l.unit)} · balance ${money(l.balance)}</small></div>${badge(l.state)}${ic('chev')}</div>`).join('') : '<div class="empty" style="padding:16px">No loans yet.</div>'}`,
+    actions: [{ label: 'Edit', run: () => clientForm(c) }, { label: `${ic('plus')}New loan`, cls: 'primary', run: () => loanForm(c) }]
+  });
+  $$('[data-loan]', $('#mods')).forEach(b => b.onclick = () => loanDetail(b.dataset.loan));
+}
+
+/* ═══════════ Loans ═══════════ */
+V.loans = async function () {
+  main().innerHTML = `<div class="pagehead"><div><h1>Loans</h1><div class="muted">Applications, approvals and active loans</div></div><button class="btn primary" id="nl">${ic('plus')}<span class="t">New loan</span></button></div>
+    <div class="toolbar">${searchBox('q', 'Search client or loan ID')}<div class="seg" id="seg">${['', 'Pending', 'Active', 'Closed'].map(s => `<button data-s="${s}">${s || 'All'}</button>`).join('')}</div></div>${listShell()}`;
+  $('#nl').onclick = () => loanForm();
+  let q = '', st = S.lstat || '', L;
+  const build = () => { $$('#seg button').forEach(b => b.classList.toggle('on', b.dataset.s === st));
+    L = lazy({ scroller: $('#sc'), body: $('#bd'), more: $('#mr'), empty: 'No loans found.', load: p => api('loansList', { q, status: st, page: p }), row: loanRow, onData: d => $('#tot').textContent = `${d.total} loan${d.total === 1 ? '' : 's'}` }); };
+  $('#seg').onclick = e => { const b = e.target.closest('button'); if (b) { st = S.lstat = b.dataset.s; build(); } };
+  $('#bd').onclick = e => { const r = e.target.closest('.row'); if (r) loanDetail(r.dataset.id); };
+  $('#q').oninput = debounce(e => { q = e.target.value.trim(); L.reload(); });
+  build();
+};
+function loanForm(client) {
+  const rid = uid(), rate = S.settings.default_rate, lim = Number(S.settings.officer_limit);
+  modal({
+    title: 'New loan application',
+    body: `<div id="lf2"><div class="field"><label>Client *</label><input id="cq" placeholder="Search name, phone or ID" autocomplete="off"><input type="hidden" name="clientId"><div class="pick" id="cr" hidden></div></div>
+      <div class="two">${field('Loan amount *', 'principal', '', 'number', 'min="1" step="0.01" inputmode="decimal"')}<div class="field"><label>Tenure</label><select name="term">${TERMS.map(t => `<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div></div>
+      <div class="two">${field('Interest rate (% flat)', 'rate', rate, 'number', 'min="0" max="100" step="0.01"')}${field('Start date', 'startDate', today(), 'date')}</div>
+      <div class="field"><label>Collateral</label><select name="collateralType"><option value="item">Item offered</option><option value="none">No collateral</option></select></div>
+      <div id="cf2" class="two">${field('Item description', 'collateral', '', 'text', 'placeholder="e.g. Motor vehicle"')}${field('Estimated value', 'collateralValue', '', 'number', 'min="0" step="0.01"')}</div>
+      <div class="calc" id="calc"></div><div class="muted" id="note" style="font-size:12px"></div></div>`,
+    actions: [{ label: 'Cancel', run: o => o.remove() }, { label: 'Submit application', cls: 'primary', run: (o, b) => submit(b, async () => {
+      const f = formData($('#lf2', o)); if (!f.clientId) throw new Error('Select a client.'); f.rid = rid;
+      const r = await api('loanSave', f); o.remove();
+      toast(r.status === 'Active' ? 'Loan approved and schedule created' : 'Application submitted for approval'); refresh(); loanDetail(r.id);
+    }) }]
+  });
+  const root = $('#lf2'), g = n => $(`[name=${n}]`, root);
+  const calc = () => {
+    const p = parseFloat(g('principal').value) || 0, r = parseFloat(g('rate').value) || 0, n = parseInt(g('term').value, 10), i = p * r / 100, t = p + i;
+    $('#calc').innerHTML = `<div><span>Principal</span><span>${money(p)}</span></div><div><span>Interest (${r}% flat)</span><span>${money(i)}</span></div><div><span>Installment x ${n}</span><span>${money(t / n)}</span></div><div><span>Total repayable</span><span>${money(t)}</span></div>`;
+    $('#note').textContent = S.user.role !== 'admin' && p > lim ? `Amounts above ${money(lim)} require administrator approval.` : '';
+  };
+  $$('input,select', root).forEach(i => i.addEventListener('input', calc));
+  g('collateralType').onchange = () => $('#cf2').hidden = g('collateralType').value === 'none';
+  const pickC = c => { g('clientId').value = c.id; $('#cq').value = `${c.name} (${c.id})`; $('#cr').hidden = true; };
+  $('#cq').oninput = debounce(async e => {
+    g('clientId').value = ''; const q = e.target.value.trim(); if (!q) return ($('#cr').hidden = true);
+    try { const d = await api('clientsList', { q, page: 1 }); $('#cr').hidden = false; $('#cr').innerHTML = d.rows.length ? d.rows.map(c => `<button type="button" data-id="${esc(c.id)}"><b>${esc(c.name)}</b> <span class="muted">${esc(c.id)} · ${esc(c.phone)}</span></button>`).join('') : '<div class="empty" style="padding:12px">No match.</div>';
+      $$('#cr button').forEach(b => b.onclick = () => pickC(d.rows.find(c => c.id === b.dataset.id))); } catch (err) { toast(err.message, 'err'); }
+  }, 300);
+  if (client) pickC(client); calc();
+}
+async function loanDetail(id) {
+  const d = await api('loanGet', { id }), l = d.loan; closeAll();
+  const admin = S.user.role === 'admin', acts = [{ label: `${ic('print')}Print`, run: () => window.print() }];
+  if (l.status === 'Pending' && admin) acts.push({ label: 'Reject', cls: 'danger', run: (o, b) => decide(o, b, 'reject') }, { label: `${ic('check')}Approve`, cls: 'primary', run: (o, b) => decide(o, b, 'approve') });
+  if (l.status === 'Active') acts.push({ label: `${ic('card')}Receive payment`, cls: 'primary', run: () => payForm(l) });
+  const decide = (o, b, decision) => submit(b, async () => {
+    if (!await confirmBox(decision === 'approve' ? 'Approve this loan and create the repayment schedule?' : 'Reject this application?', decision === 'approve' ? 'Approve' : 'Reject')) return;
+    await api('loanDecide', { id: l.id, decision }); toast(decision === 'approve' ? 'Loan approved' : 'Application rejected'); refresh(); loanDetail(l.id);
+  });
+  modal({
+    title: `${l.id} · ${d.client.name || ''}`, wide: true,
+    body: `<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">${badge(l.state)}<span class="muted">${termLabel(l.periods, l.unit)} · ${l.rate}% flat · starts ${fdate(l.startDate)}</span></div>
+      <div class="muted">Collateral: ${l.collateral ? esc(l.collateral) + (l.collateralValue ? ' (' + money(l.collateralValue) + ')' : '') : 'None'}${l.approvedBy ? ' · Decided by ' + esc(l.approvedBy) : ''}</div>
+      <div class="sumline"><div><div class="kl">Principal</div><b>${money(l.principal)}</b></div><div><div class="kl">Total repayable</div><b>${money(l.total)}</b></div><div><div class="kl">Paid</div><b>${money(l.paid)}</b></div><div><div class="kl">Balance</div><b>${money(l.balance)}</b></div></div>
+      ${d.schedule.length ? `<div class="sec" style="margin-top:6px"><h2>Repayment schedule</h2></div><div class="tw"><table><tr><th>#</th><th>Due</th><th class="r">Amount</th><th class="r">Paid</th><th>Status</th></tr>${d.schedule.map(s => { const full = s.paid >= s.amount - 0.004, od = !full && s.dueDate < today(), st = full ? 'Paid' : od ? 'Overdue' : (s.paid > 0 ? 'Partial' : 'Upcoming'); return `<tr><td>${s.no}</td><td>${fdate(s.dueDate)}</td><td class="r">${money(s.amount)}</td><td class="r">${money(s.paid)}</td><td><span class="badge ${full ? 'ok' : od ? 'bad' : s.paid > 0 ? 'warn' : ''}">${st}</span></td></tr>`; }).join('')}</table></div>` : '<div class="empty" style="padding:16px">The schedule is created when the loan is approved.</div>'}
+      ${d.payments.length ? `<div class="sec"><h2>Payments</h2></div>${d.payments.map(p => `<div class="mini" data-pay="${esc(p.id)}" style="cursor:pointer"><div class="grow"><b>${esc(p.id)}</b><small>${fdate(p.date)} · ${esc(p.method)}</small></div><div class="amt" style="color:var(--ok)">${money(p.amount)}</div>${ic('chev')}</div>`).join('')}` : ''}`,
+    actions: acts
+  });
+  $$('[data-pay]', $('#mods')).forEach(b => b.onclick = () => receiptView(b.dataset.pay));
+}
+
+/* ═══════════ Repayments ═══════════ */
+V.repay = async function () {
+  main().innerHTML = `<div class="pagehead"><div><h1>Repayments</h1><div class="muted">Collect installments and review payments</div></div><div class="seg" id="seg"><button data-t="collect">Collect</button><button data-t="history">History</button></div></div>
+    <div class="toolbar">${searchBox('q', 'Search client or loan ID')}<div class="seg" id="flt"><button data-f="all">All</button><button data-f="due">Due now</button></div></div>${listShell()}`;
+  let tab = S.ptab || 'collect', flt = S.pflt || 'all', q = '', L; const cache = {};
+  const rowC = l => { cache[l.id] = l; return `<div class="row static"><div class="av">${esc(initials(l.clientName))}</div><div class="grow"><b>${esc(l.clientName)}</b><small>${esc(l.id)} · balance ${money(l.balance)}${l.next ? ' · next ' + fdate(l.next.dueDate) : ''}</small></div><div class="amt">${l.next ? money(l.next.amount) : ''}<div>${badge(l.state)}</div></div><button class="btn sm primary" data-loan="${esc(l.id)}">Receive</button></div>`; };
+  const rowH = p => `<div class="row" data-pay="${esc(p.id)}"><div class="av">${esc(initials(p.clientName))}</div><div class="grow"><b>${esc(p.clientName)}</b><small>${esc(p.loanId)} · ${fdate(p.date)} · ${esc(p.method)}${p.reference ? ' · ' + esc(p.reference) : ''}</small></div><div class="amt" style="color:var(--ok)">+${money(p.amount)}</div>${ic('chev')}</div>`;
+  const build = () => {
+    $$('#seg button').forEach(b => b.classList.toggle('on', b.dataset.t === tab)); $$('#flt button').forEach(b => b.classList.toggle('on', b.dataset.f === flt)); $('#flt').hidden = tab !== 'collect';
+    L = lazy({ scroller: $('#sc'), body: $('#bd'), more: $('#mr'), empty: tab === 'collect' ? 'No active loans.' : 'No payments received yet.',
+      load: p => api(tab === 'collect' ? 'repayList' : 'paymentsList', { q, page: p, filter: flt }), row: tab === 'collect' ? rowC : rowH,
+      onData: d => $('#tot').textContent = tab === 'collect' ? `${d.total} active loan${d.total === 1 ? '' : 's'} · ${money(d.totalOverdue)} overdue` : `${d.total} payment${d.total === 1 ? '' : 's'} · ${money(d.totalAmount)} received` });
+  };
+  $('#seg').onclick = e => { const b = e.target.closest('button'); if (b) { tab = S.ptab = b.dataset.t; build(); } };
+  $('#flt').onclick = e => { const b = e.target.closest('button'); if (b) { flt = S.pflt = b.dataset.f; build(); } };
+  $('#q').oninput = debounce(e => { q = e.target.value.trim(); L.reload(); });
+  $('#bd').onclick = e => { const b = e.target.closest('[data-loan]'); if (b) return payForm(cache[b.dataset.loan]); const r = e.target.closest('[data-pay]'); if (r) receiptView(r.dataset.pay); };
+  build();
+};
+function payForm(l) {
+  const rid = uid(), def = l.next ? Math.min(l.next.amount, l.balance) : l.balance;
+  modal({
+    title: 'Receive payment',
+    body: `<div id="pf"><div class="calc"><div><span>Client</span><b>${esc(l.clientName || '')}</b></div><div><span>Loan</span><b>${esc(l.id)}</b></div><div><span>Overdue</span><b>${money(l.overdue || 0)}</b></div><div><span>Outstanding balance</span><b>${money(l.balance)}</b></div></div>
+      ${field('Amount received *', 'amount', def.toFixed(2), 'number', `min="0.01" max="${l.balance}" step="0.01" inputmode="decimal"`)}
+      <div class="two"><div class="field"><label>Method</label><select name="method"><option>Cash</option><option>Mobile money</option><option>EFT</option><option>Card</option><option>Other</option></select></div>${field('Date received', 'date', today(), 'date')}</div>
+      ${field('Reference (optional)', 'reference')}</div>`,
+    actions: [{ label: 'Cancel', run: o => o.remove() }, { label: `${ic('check')}Confirm payment`, cls: 'primary', run: (o, b) => submit(b, async () => {
+      const r = await api('paymentRecord', { ...formData($('#pf', o)), loanId: l.id, rid }); closeAll(); toast('Payment recorded'); refresh(); receiptView(r.id);
+    }) }]
+  });
+}
+async function receiptView(id) {
+  const d = await api('receipt', { id }), p = d.payment, row = (a, b, c = '') => `<div class="rr ${c}"><span>${a}</span><span>${b}</span></div>`;
+  modal({
+    title: 'Payment receipt',
+    body: `<div class="rc"><div class="rh"><b style="font-size:17px">${esc(d.company.name)}</b><div class="muted">${esc(d.company.tagline || '')}</div></div>
+      ${row('Receipt no.', esc(p.id))}${row('Date', fdate(p.date))}${row('Client', esc(d.client.name || '') + ' (' + esc(d.client.id || '') + ')')}${row('Loan', esc(d.loan.id || ''))}${row('Method', esc(p.method) + (p.reference ? ' · ' + esc(p.reference) : ''))}
+      ${row('Amount paid', money(p.amount), 'tot')}${row('Balance after payment', money(p.balanceAfter))}
+      ${p.balanceAfter <= 0 ? row('Status', 'Fully repaid') : (d.loan.next ? row('Next installment', money(d.loan.next.amount) + ' due ' + fdate(d.loan.next.dueDate)) : '')}
+      ${row('Received by', esc(p.recordedBy))}<div class="muted" style="text-align:center;margin-top:14px;font-size:12px">Thank you for your payment. Keep this receipt for your records.</div></div>`,
+    actions: [{ label: 'Close', run: o => o.remove() }, { label: `${ic('print')}Print`, cls: 'primary', run: () => window.print() }]
+  });
+}
+
+boot();
+</script>
+</body>
+</html>
